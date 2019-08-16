@@ -16,6 +16,15 @@ public class Parser {
     private final static String ISSUE_KEY = "issue";
     private final static String RESOLVER_KEY = "resolver";
 
+    /**
+     * Parses a JSON document provided by the given input
+     * stream and tries to look for {@code [*.]issue.issue.resolver.value}.
+     *
+     *
+     * @param inputStream target json data
+     * @return all the occurrences of {@code [*.]issue.issue.resolver.value}, if any.
+     *         Empty list is returned when no results found.
+     */
     public List<String> parseJson(InputStream inputStream) {
         final ArrayList<String> targets = new ArrayList<>();
         //stack for storing json objects hierarchy
@@ -73,16 +82,16 @@ public class Parser {
     }
 
     /**
-     * Init json parser from InputStream
+     * Creates a json parser which reads
+     * given input stream.
      *
-     * @param resourceAsStream
-     * @return
-     * @throws NotFoundException
+     * @param inputStream data to be parsed
+     * @return initialized parser
      */
-    private JsonParser initParser(InputStream resourceAsStream) {
+    private JsonParser initParser(InputStream inputStream) {
         JsonFactory jsonfactory = new JsonFactory();
         try {
-            return jsonfactory.createParser(resourceAsStream);
+            return jsonfactory.createParser(inputStream);
         } catch (IOException e) {
             throw new RuntimeException("Failed to create parser");
         }
