@@ -1,10 +1,10 @@
 package parser;
 
-import exception.NotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class ParserTest {
     private List<String> hierarchy;
 
     @Before
-    public void Before() {
+    public void before() {
         hierarchy = new ArrayList<>();
         hierarchy.add("issue");
         hierarchy.add("issue");
@@ -24,8 +24,8 @@ public class ParserTest {
     }
 
     @Test
-    public void TestParseTree() throws NotFoundException {
-        final List<String> targets = parser.ParseJson("tree.json");
+    public void testParseTree() {
+        final List<String> targets = parser.parseJson(readFile("tree.json"));
         Assert.assertEquals(targets.size(), 5);
         Assert.assertTrue(targets.contains("target1"));
         Assert.assertTrue(targets.contains("target3"));
@@ -34,22 +34,27 @@ public class ParserTest {
         Assert.assertTrue(targets.contains("target8"));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void TestParseWhenFileNotFound() throws NotFoundException {
-        final List<String> targets = parser.ParseJson("not_found.json");
-    }
-
     @Test
-    public void TestParseWhenFileIsEmpty() throws NotFoundException {
-        final List<String> targets = parser.ParseJson("empty.json");
+    public void testParseWhenFileIsEmpty() {
+        final List<String> targets = parser.parseJson(readFile("empty.json"));
         Assert.assertEquals(targets.size(), 0);
     }
 
     @Test
-    public void TestParseWhenValueInArray() throws NotFoundException {
-        final List<String> targets = parser.ParseJson("in_array.json");
+    public void testParseWhenValueInArray() {
+        final List<String> targets = parser.parseJson(readFile("in_array.json"));
         Assert.assertTrue(targets.contains("target3"));
         Assert.assertTrue(targets.contains("target4"));
+    }
+
+    private InputStream readFile(String filename) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        final InputStream resourceAsStream = classloader.getResourceAsStream(filename);
+        if (resourceAsStream == null) {
+            throw new RuntimeException("File not found");
+        }
+
+        return resourceAsStream;
     }
 
 }

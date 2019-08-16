@@ -3,7 +3,6 @@ package parser;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import exception.NotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,34 +16,43 @@ public class Parser {
     private final static String ISSUE_KEY = "issue";
     private final static String RESOLVER_KEY = "resolver";
 
-    public List<String> ParseJson(String filename) throws NotFoundException {
+    public List<String> parseJson(InputStream inputStream) {
         final ArrayList<String> targets = new ArrayList<>();
+        //stack for storing json objects hierarchy
         final Stack<String> parents = new Stack<>();
 
         try {
-            final JsonParser parser = initParser(filename);
+            final JsonParser parser = initParser(inputStream);
 
+            //read json
             while (parser.nextToken() != null) {
                 final JsonToken currentToken = parser.currentToken();
                 final String key = parser.getCurrentName();
 
+                //if json object starts - add field name to stack
                 if (currentToken == JsonToken.START_OBJECT) {
                     if (key == null) {
+                        //if json token key is null add pseudo key, uses in comparing
                         parents.push("null");
                     } else {
                         parents.push(key);
                     }
                 }
 
+                //if json object ends remove it from stack
                 if (currentToken == JsonToken.END_OBJECT) {
                     parents.pop();
                 }
 
+                //found target node
                 if (currentToken == JsonToken.FIELD_NAME && key.equals(TARGET_KEY)) {
+                    //check hierarchy
                     final int size = parents.size();
                     if (size >= 3 && parents.get(size - 1).equals(RESOLVER_KEY) && parents.get(size - 2)
                             .equals(ISSUE_KEY) && parents.get(size - 3).equals(ISSUE_KEY)) {
+                        //get next token for get value
                         final JsonToken jsonToken = parser.nextToken();
+                        //if token is string value - add to targets
                         if (jsonToken == JsonToken.VALUE_STRING) {
                             targets.add(parser.getText());
                         } else if (jsonToken == JsonToken.START_OBJECT) {
@@ -64,13 +72,14 @@ public class Parser {
         return targets;
     }
 
-    private JsonParser initParser(String filename) throws NotFoundException {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        final InputStream resourceAsStream = classloader.getResourceAsStream(filename);
-        if (resourceAsStream == null) {
-            throw new NotFoundException("File not found");
-        }
-
+    /**
+     * Init json parser from InputStream
+     *
+     * @param resourceAsStream
+     * @return
+     * @throws NotFoundException
+     */
+    private JsonParser initParser(InputStream resourceAsStream) {
         JsonFactory jsonfactory = new JsonFactory();
         try {
             return jsonfactory.createParser(resourceAsStream);
