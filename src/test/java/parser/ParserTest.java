@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ParserTest {
     }
 
     @Test
-    public void testParseTree() {
+    public void testParseTree() throws IOException {
         final List<String> targets = parser.parseJson(readFile("tree.json"));
         Assert.assertEquals(targets.size(), 5);
         Assert.assertTrue(targets.contains("target1"));
@@ -35,13 +36,13 @@ public class ParserTest {
     }
 
     @Test
-    public void testParseWhenFileIsEmpty() {
+    public void testParseWhenFileIsEmpty() throws IOException {
         final List<String> targets = parser.parseJson(readFile("empty.json"));
         Assert.assertEquals(targets.size(), 0);
     }
 
     @Test
-    public void testParseWhenValueInArray() {
+    public void testParseWhenValueInArray() throws IOException {
         final List<String> targets = parser.parseJson(readFile("in_array.json"));
         Assert.assertTrue(targets.contains("target3"));
         Assert.assertTrue(targets.contains("target4"));

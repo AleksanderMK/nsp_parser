@@ -20,12 +20,11 @@ public class Parser {
      * Parses a JSON document provided by the given input
      * stream and tries to look for {@code [*.]issue.issue.resolver.value}.
      *
-     *
      * @param inputStream target json data
      * @return all the occurrences of {@code [*.]issue.issue.resolver.value}, if any.
-     *         Empty list is returned when no results found.
+     * Empty list is returned when no results found.
      */
-    public List<String> parseJson(InputStream inputStream) {
+    public List<String> parseJson(InputStream inputStream) throws IOException {
         final ArrayList<String> targets = new ArrayList<>();
         //stack for storing json objects hierarchy
         final Stack<String> parents = new Stack<>();
@@ -57,8 +56,10 @@ public class Parser {
                 if (currentToken == JsonToken.FIELD_NAME && key.equals(TARGET_KEY)) {
                     //check hierarchy
                     final int size = parents.size();
-                    if (size >= 3 && parents.get(size - 1).equals(RESOLVER_KEY) && parents.get(size - 2)
-                            .equals(ISSUE_KEY) && parents.get(size - 3).equals(ISSUE_KEY)) {
+                    if (size >= 3 &&
+                            parents.get(size - 1).equals(RESOLVER_KEY) &&
+                            parents.get(size - 2).equals(ISSUE_KEY) &&
+                            parents.get(size - 3).equals(ISSUE_KEY)) {
                         //get next token for get value
                         final JsonToken jsonToken = parser.nextToken();
                         //if token is string value - add to targets
@@ -74,8 +75,8 @@ public class Parser {
             }
 
             parser.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to parse", e);
+        } catch (IOException cause) {
+            throw cause;
         }
 
         return targets;
@@ -88,12 +89,12 @@ public class Parser {
      * @param inputStream data to be parsed
      * @return initialized parser
      */
-    private JsonParser initParser(InputStream inputStream) {
+    private JsonParser initParser(InputStream inputStream) throws IOException {
         JsonFactory jsonfactory = new JsonFactory();
         try {
             return jsonfactory.createParser(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create parser");
+        } catch (IOException cause) {
+            throw cause;
         }
     }
 }
