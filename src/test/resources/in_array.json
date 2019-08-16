@@ -1,0 +1,31 @@
+{
+  "issue": {
+    "resolver": {
+      "value": "target1"
+    },
+    "issue": {
+      "resolver": {
+        "value": {
+          "value": "target2",
+          "issue": [
+            "arrValue1",
+            {
+              "issue": {
+                "issue": {
+                  "resolver": {
+                    "value": "target3"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "issue": {
+      "resolver": {
+        "value": "target4"
+      }
+    }
+  }
+}

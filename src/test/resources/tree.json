@@ -1,0 +1,84 @@
+{
+  "issue": {
+    "issue": {
+      "resolver": {
+        "value": "target1",
+        "resolver": {
+          "issue": {
+            "resolver": {
+              "id": 3,
+              "value": "target2"
+            },
+            "issue": {
+              "resolver": {
+                "value": "target3",
+                "id": 5
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "someValue": {
+    "issue": {
+      "issue": {
+        "resolver": {
+          "id": {
+            "id": 222
+          },
+          "value": {
+            "value": "target4",
+            "issue": {
+              "issue": {
+                "resolver": {
+                  "value": "target5"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "someValue2": {
+    "issue": {
+      "issue": {
+        "resolver": {
+          "value": {
+            "value": [
+              {
+                "issue": {
+                  "issue": {
+                    "resolver": {
+                      "value": "target6"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "someValue3": {
+    "issue": [
+      {
+        "value": "target7",
+        "resolver": {
+          "resolver": {
+            "id": 555
+          }
+        },
+        "issue": {
+          "issue": {
+            "resolver": {
+              "value": "target8"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
